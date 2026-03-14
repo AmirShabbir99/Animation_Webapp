@@ -1,3 +1,4 @@
+import { generateToken } from "../../animation/src/utilities/jwtToken.js"
 import { User } from "../modals/user.modals.js"
 
 export const UserController = async (req, res) => {
@@ -10,4 +11,6 @@ export const UserController = async (req, res) => {
     success: true,
     message: "Successfully done",
   });
+
+    generateToken(user, "User registered successfully.", 201, res);
 }
