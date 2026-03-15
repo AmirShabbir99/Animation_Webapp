@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import { generateToken } from "../../animation/src/utilities/jwtToken.js"
 import { User } from "../modals/user.modals.js"
 
@@ -7,10 +8,16 @@ export const UserController = async (req, res) => {
     const user = new User({ name, email, phone,role,password })
     console.log("DB visit done.......")
     await user.save()
+    generateToken(user, "User registered successfully.", 201, res);
+}
+export const GetRole = async (req, res) => {
+    const { role } = req.query
+    const newrole = await User.find().select("role -_id");
+        console.log("UserROle DB visit done.......")
+        console.log("newrole",newrole)
     return res.status(200).json({
     success: true,
     message: "Successfully done",
+    newrole
   });
-
-    generateToken(user, "User registered successfully.", 201, res);
 }
