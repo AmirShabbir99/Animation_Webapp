@@ -1,11 +1,13 @@
 import { useState } from "react"
 import LoginPage from "./LoginPage"
+import AdminPanel from "./AdminPanel"
 
 const App = () => {
   const [state,setstate]=useState(false)
   return (
     <>
-    <LoginPage/>
+    <AdminPanel/>
+    {/* <LoginPage/>
     <div className="relative flex justify-center z-10  items-center h-screen w-full">
      <button 
         onClick={() => setstate(true)} 
@@ -26,7 +28,7 @@ const App = () => {
     </div>
   </div>
 )}
-     </div>
+     </div> */}
     </>
    
   )
