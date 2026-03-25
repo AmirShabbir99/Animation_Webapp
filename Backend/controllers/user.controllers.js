@@ -21,3 +21,13 @@ export const GetRole = async (req, res) => {
     newrole
   });
 }
+
+
+export const GetUser = async (req, res) => {
+    const allUsers = await User.find();
+    return res.status(200).json({
+    success: true,
+    message: "ALl users are comming",
+    allUsers
+  });
+}

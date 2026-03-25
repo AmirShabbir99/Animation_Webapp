@@ -10,7 +10,7 @@ app.use(cors())
 app.use("/",Userouter)
 console.log("Route visit done.......")
 // Corrected connection method and promise handling
-mongoose.connect(process.env.MONGOURI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB connection error:", err));
 
