@@ -1,14 +1,30 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import LoginPage from "./LoginPage"
 import AdminPanel from "./AdminPanel"
+import axios from "axios"
+import ClientPanel from "./ClientPanel"
 
 const App = () => {
-  const [state,setstate]=useState(false)
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get("http://localhost:8000/getrole");
+      setRole(res.data.newrole[0].role);
+      console.log("Role:", res.data.newrole[0]);
+    };
+    fetchData();
+  }, []);
+
+  if (role === null) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
-    <AdminPanel/>
-    {/* <LoginPage/>
-    <div className="relative flex justify-center z-10  items-center h-screen w-full">
+      {role == "SuperAdmin" ? <AdminPanel /> : <ClientPanel />}
+    <LoginPage/>
+ {/*    <div className="relative flex justify-center z-10  items-center h-screen w-full">
      <button 
         onClick={() => setstate(true)} 
         className="bg-red-600 p-4 rounded-xl text-white hover:bg-red-700 transition-colors"

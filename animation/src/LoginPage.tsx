@@ -3,9 +3,16 @@ import { useForm } from "react-hook-form";
 
 function LoginPage() {
 const { register,handleSubmit } = useForm();
-const onSubmit=async(data:any)=>{
-await axios.post("http://localhost:8000/",data)
-}
+const onSubmit = async (data: any) => {
+  const res = await axios.post("http://localhost:8000/", data, {
+  withCredentials: true,
+});
+
+  // ✅ store token
+  localStorage.setItem("token", res.data.token);
+
+  console.log("Token:", res.data.token);
+};
   return (
     <>
     <div className="absolute inset-0 flex items-center justify-center  bg-black/50 h-full w-full z-9999">

@@ -1,67 +1,41 @@
 import axios from "axios";
+import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const AdminPanel = () => {
-  const [users, setUsers] = useState([]);
+    const [Data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/allusers");
-        setUsers(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await axios.get("http://localhost:8000/allusers");
+            setData(res.data.allUsers);
+            console.log("Res.data :", res.data);
+        };
+        fetchData();
+    }, []);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-r from-[#a044ff] to-[#6a3093] p-6">
-      <div className="max-w-6xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-6">
-        
-        {/* Heading */}
-        <h1 className="text-3xl font-bold text-white mb-6 text-center">
-          Admin Panel
-        </h1>
+     const DeleteUserData = async (id:any) => {
+            await axios.delete(`http://localhost:8000/deleteuser/${id}`);
+            const filterData=Data.filter((item:any)=>item._id!==id)
+            setData(filterData);
+        };
+    return (
+        <>
+            <h1>Admin Panel</h1>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-white">
-            <thead>
-              <tr className="bg-white/20 text-lg">
-                <th className="p-3">Name</th>
-                <th className="p-3">Email</th>
-                <th className="p-3">Role</th>
-                <th className="p-3">Password</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {users.map((user, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-white/20 hover:bg-white/10 transition"
-                >
-                  <td className="p-3">{user.name}</td>
-                  <td className="p-3">{user.email}</td>
-                  <td className="p-3">
-                    <span className="px-3 py-1 rounded-full text-sm bg-green-400/20 text-green-300">
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <span className="text-red-300">••••••••</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  );
+            <div className="grid grid-cols-4 gap-4 w-full">
+                {Data.map((user: any) => (
+                    <div key={user._id} className="border p-2 rounded">
+                        <p>Name: {user.name}</p>
+                        <p>Email: {user.email}</p>
+                        <p>Role: {user.role}</p>
+                        <button className="hover:bg-red-400 cursor-pointer" onClick={()=>DeleteUserData(user._id)}><Trash className="text-red-500 "/></button>
+                        
+                    </div>
+                ))}
+            </div>
+        </>
+    );
 };
 
 export default AdminPanel;
