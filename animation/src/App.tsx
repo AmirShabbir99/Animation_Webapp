@@ -3,6 +3,8 @@ import LoginPage from "./LoginPage"
 import AdminPanel from "./AdminPanel"
 import axios from "axios"
 import ClientPanel from "./ClientPanel"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Home from "./Home"
 
 const App = () => {
   const [role, setRole] = useState<string | null>(null);
@@ -22,9 +24,17 @@ const App = () => {
 
   return (
     <>
-      {role == "SuperAdmin" ? <AdminPanel /> : <ClientPanel />}
-    <LoginPage/>
- {/*    <div className="relative flex justify-center z-10  items-center h-screen w-full">
+      <BrowserRouter>
+        <Routes>
+          {/* <Route path="/" element={role == "SuperAdmin" ? <AdminPanel /> : <ClientPanel />}/> */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+          {/* <Route path="" element={}/> */}
+        </Routes>
+      </BrowserRouter>
+
+
+      {/*    <div className="relative flex justify-center z-10  items-center h-screen w-full">
      <button 
         onClick={() => setstate(true)} 
         className="bg-red-600 p-4 rounded-xl text-white hover:bg-red-700 transition-colors"
@@ -46,7 +56,7 @@ const App = () => {
 )}
      </div> */}
     </>
-   
+
   )
 }
 

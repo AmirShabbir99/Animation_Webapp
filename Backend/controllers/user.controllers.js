@@ -10,6 +10,7 @@ export const UserController = async (req, res) => {
     await user.save()
     generateToken(user, "User registered successfully.", 201, res);
 }
+
 export const GetRole = async (req, res) => {
     const { role } = req.query
     const newrole = await User.find().select("role -_id");
