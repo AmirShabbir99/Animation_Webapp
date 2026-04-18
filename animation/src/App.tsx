@@ -1,63 +1,78 @@
-import { useEffect, useState } from "react"
-import LoginPage from "./LoginPage"
-import AdminPanel from "./AdminPanel"
-import axios from "axios"
-import ClientPanel from "./ClientPanel"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Home from "./Home"
+import LoginPage from "./LoginPage";
+import SignupPage from "./SignupPage";
+import AdminPanel from "./AdminPanel";
+import ClientPanel from "./ClientPanel";
+import Home from "./Home";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const App = () => {
-  const [role, setRole] = useState<string | null>(null);
+  const location = useLocation();
+  const { loading, isAuthorized, user } = useSelector((state: any) => state.user);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get("http://localhost:8000/getrole");
-      setRole(res.data.newrole[0].role);
-      console.log("Role:", res.data.newrole[0]);
-    };
-    fetchData();
-  }, []);
-
-  if (role === null) {
-    return <p>Loading...</p>;
+  console.log("isAuthorized", isAuthorized);
+  console.log("role :", user?.user?.role);
+  console.log("user :", user?.user);
+  console.log("user 2:", user);
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl font-semibold">
+        Checking authentication...
+      </div>
+    );
   }
 
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          {/* <Route path="/" element={role == "SuperAdmin" ? <AdminPanel /> : <ClientPanel />}/> */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          {/* <Route path="" element={}/> */}
-        </Routes>
-      </BrowserRouter>
+    <Routes>
+
+      <Route
+        path="/login"
+        element={!isAuthorized ? <LoginPage /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/signup"
+        element={!isAuthorized ? <SignupPage /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/"
+        element={
+          !isAuthorized ? (
+            <Navigate to="/login" />
+          ) : user?.role === "SuperAdmin" ? (
+            <Navigate to="/admin" />
+          ) : user?.role === "User" ? (
+            <Navigate to="/user" />
+          ) : (
+            <Home />
+          )
+        }
+      />
 
 
-      {/*    <div className="relative flex justify-center z-10  items-center h-screen w-full">
-     <button 
-        onClick={() => setstate(true)} 
-        className="bg-red-600 p-4 rounded-xl text-white hover:bg-red-700 transition-colors"
-      >
-        Open Modal
-      </button>
+      <Route
+        path="/admin"
+        element={
+          isAuthorized && user?.role === "SuperAdmin"
+            ? <AdminPanel />
+            : <Navigate to="/" />
+        }
+      />
 
-    {state && (
-  <div className="fixed inset-0 flex justify-end items-center bg-black/50 z-50">
-    <div className="animate-fadeUp h-[70vh] w-[40vh]  transform translate-[-100px] animation[3s_linear_3000] bg-amber-300 rounded-2xl shadow-2xl flex flex-col p-6">
-      <button
-        onClick={() => setstate(false)}
-        className="mt-auto bg-black text-white p-2 rounded-lg"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-     </div> */}
-    </>
+      <Route
+        path="/user"
+        element={
+          isAuthorized && user?.role === "User"
+            ? <ClientPanel />
+            : <Navigate to="/" />
+        }
+      />11
 
-  )
-}
+      <Route path="*" element={<Navigate to="/" />} />
 
-export default App
+    </Routes>
+  );
+};
+
+export default App;

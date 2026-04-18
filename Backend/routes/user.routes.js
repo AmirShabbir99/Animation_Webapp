@@ -1,12 +1,13 @@
 import { Router } from "express"
-import { DeleteUser, GetRole, GetUser, UserController } from "../controllers/user.controllers.js"
-import { isAuthenticated } from "../middleware/Auth.js"
+import { DeleteUser, GetRole, GetUser, Signup,Login } from "../controllers/user.controllers.js"
+import { isAuthenticated, isAuthorized } from "../middleware/Auth.js"
 
 const router = Router()
 
-router.post("/login", UserController)
-router.get("/getrole", GetRole)
-router.get("/allusers",isAuthenticated, GetUser)
-router.delete("/deleteuser/:id",isAuthenticated, DeleteUser)
+router.post("/signup", Signup);
+router.post("/login", Login);
+// router.get("/getrole",isAuthenticated,isAuthorized("User"), GetRole)
+router.get("/allusers",isAuthenticated,isAuthorized("SuperAdmin"), GetUser)
+router.delete("/deleteuser/:id",isAuthenticated,isAuthorized("SuperAdmin"), DeleteUser)
 
 export default router

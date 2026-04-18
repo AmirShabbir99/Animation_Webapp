@@ -4,10 +4,10 @@ export const generateToken = (user, msg, status, res) => {
   res
     .status(status)
     .cookie("token", token, {
-      expires: new Date(
-        Date.now() + Number(process.env.COOKIE_EXPIRE) * 24 * 60 * 60 * 1000
-      ),
       httpOnly: true,
+      sameSite: "lax", // OK for localhost
+      secure: false,   // true only in HTTPS
+      path: "/",       // IMPORTANT
     })
     .json({
       success: true,
